@@ -10,12 +10,14 @@ __powerline() {
     COLOR_GIT=${COLOR_GIT:-'\[\033[0;36m\]'} # cyan
     COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;32m\]'} # green
     COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[0;31m\]'} # red
+    COLOR_K8S=${COLOR_K8S:-'\[\033[0;31m\]'} # red
 
     # Symbols
     SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-⑂}
     SYMBOL_GIT_MODIFIED=${SYMBOL_GIT_MODIFIED:-*}
     SYMBOL_GIT_PUSH=${SYMBOL_GIT_PUSH:-↑}
     SYMBOL_GIT_PULL=${SYMBOL_GIT_PULL:-↓}
+    SYMBOL_K8S=${SYMBOL_K8S:-⎈}
 
     if [[ -z "$PS_SYMBOL" ]]; then
       case "$(uname)" in
@@ -60,6 +62,11 @@ __powerline() {
         printf " $ref$marks"
     }
 
+    __k8s_info() {
+	local ctx=$(kubectl config current-context)
+	printf "${SYMBOL_K8S}$ctx"
+    }
+    
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -77,13 +84,14 @@ __powerline() {
         # Related fix in git-bash: https://github.com/git/git/blob/9d77b0405ce6b471cb5ce3a904368fc25e55643d/contrib/completion/git-prompt.sh#L324
         if shopt -q promptvars; then
             __powerline_git_info="$(__git_info)"
-            local git="$COLOR_GIT\${__powerline_git_info}$COLOR_RESET"
+            __powerline_k8s_info="$(__k8s_info)"
+            local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info}$COLOR_RESET"
         else
             # promptvars is disabled. Avoid creating unnecessary env var.
-            local git="$COLOR_GIT$(__git_info)$COLOR_RESET"
+            local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info)$COLOR_RESET"
         fi
 
-        PS1="$cwd$git$symbol"
+        PS1="$cwd$powerinfo$symbol"
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
