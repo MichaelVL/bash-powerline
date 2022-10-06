@@ -66,14 +66,14 @@ __powerline() {
 	local ctx=$(kubectl config current-context)
 	printf "${SYMBOL_K8S}$ctx"
     }
-    
+
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
         if [ $? -eq 0 ]; then
-            local symbol="$COLOR_SUCCESS $PS_SYMBOL $COLOR_RESET"
+            local symbol="\n$COLOR_SUCCESS $PS_SYMBOL $COLOR_RESET"
         else
-            local symbol="$COLOR_FAILURE $PS_SYMBOL $COLOR_RESET"
+            local symbol="\n$COLOR_FAILURE $PS_SYMBOL $COLOR_RESET"
         fi
 
         local cwd="$COLOR_CWD\w$COLOR_RESET"
@@ -85,10 +85,10 @@ __powerline() {
         if shopt -q promptvars; then
             __powerline_git_info="$(__git_info)"
             __powerline_k8s_info="$(__k8s_info)"
-            local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info}$COLOR_RESET"
+            local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info} $COLOR_RESET"
         else
             # promptvars is disabled. Avoid creating unnecessary env var.
-            local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info)$COLOR_RESET"
+            local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info) $COLOR_RESET"
         fi
 
         PS1="$cwd$powerinfo$symbol"
