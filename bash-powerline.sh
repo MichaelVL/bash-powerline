@@ -11,6 +11,7 @@ __powerline() {
     COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;32m\]'} # green
     COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[31;7m\]'} # red background
     COLOR_K8S=${COLOR_K8S:-'\[\033[0;31m\]'} # red
+    COLOR_CLOUD=${COLOR_CLOUD:-'\[\033[0;30m\]'} # red
 
     # Symbols
     SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-⑂}
@@ -18,6 +19,8 @@ __powerline() {
     SYMBOL_GIT_PUSH=${SYMBOL_GIT_PUSH:-↑}
     SYMBOL_GIT_PULL=${SYMBOL_GIT_PULL:-↓}
     SYMBOL_K8S=${SYMBOL_K8S:-⎈}
+    #SYMBOL_CLOUD=${SYMBOL_CLOUD:-☁}
+    SYMBOL_CLOUD=${SYMBOL_CLOUD:-♣}
 
     if [[ -z "$PS_SYMBOL" ]]; then
       case "$(uname)" in
@@ -68,6 +71,12 @@ __powerline() {
 	printf "${SYMBOL_K8S}$ctx"
     }
 
+    __aws_info() {
+        [[ -z $AWS_PROFILE ]] && return # disabled
+	local ctx=$(kubectl config current-context)
+	printf "${SYMBOL_CLOUD}$AWS_PROFILE"
+    }
+
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -86,7 +95,8 @@ __powerline() {
         if shopt -q promptvars; then
             __powerline_git_info="$(__git_info)"
             __powerline_k8s_info="$(__k8s_info)"
-            local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info} $COLOR_RESET"
+            __powerline_aws_info="$(__aws_info)"
+            local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info} $COLOR_CLOUD\${__powerline_aws_info} $COLOR_RESET"
         else
             # promptvars is disabled. Avoid creating unnecessary env var.
             local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info) $COLOR_RESET"
