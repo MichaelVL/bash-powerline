@@ -63,6 +63,7 @@ __powerline() {
     }
 
     __k8s_info() {
+        [[ -z $KUBECONFIG ]] && return # disabled
 	local ctx=$(kubectl config current-context)
 	printf "${SYMBOL_K8S}$ctx"
     }
