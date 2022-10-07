@@ -99,7 +99,7 @@ __powerline() {
             local powerinfo="$COLOR_GIT\${__powerline_git_info} $COLOR_K8S\${__powerline_k8s_info} $COLOR_CLOUD\${__powerline_aws_info} $COLOR_RESET"
         else
             # promptvars is disabled. Avoid creating unnecessary env var.
-            local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info) $COLOR_RESET"
+            local powerinfo="$COLOR_GIT$(__git_info) $COLOR_K8S$(__k8s_info) $COLOR_CLOUD\${__powerline_aws_info} $COLOR_RESET"
         fi
 
         PS1="$cwd$powerinfo$symbol"
