@@ -72,8 +72,7 @@ __powerline() {
     }
 
     __aws_info() {
-        [[ -z $AWS_PROFILE ]] && return # disabled
-	local ctx=$(kubectl config current-context)
+        [[ -z $AWS_PROFILE || ! -z $__HIDE_AWS_PROFILE ]] && return # disabled
 	printf "${SYMBOL_CLOUD}$AWS_PROFILE"
     }
 
