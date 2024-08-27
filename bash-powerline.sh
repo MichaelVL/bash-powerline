@@ -11,7 +11,7 @@ __powerline() {
     COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;32m\]'} # green
     COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[31;7m\]'} # red background
     COLOR_K8S=${COLOR_K8S:-'\[\033[0;31m\]'} # red
-    COLOR_CLOUD=${COLOR_CLOUD:-'\[\033[0;30m\]'} # red
+    COLOR_CLOUD=${COLOR_CLOUD:-'\[\033[0;33m\]'} # yellow
 
     # Symbols
     SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-⑂}
@@ -66,8 +66,9 @@ __powerline() {
     }
 
     __k8s_info() {
-        [[ -z $KUBECONFIG ]] && return # disabled
-	local ctx=$(kubectl config current-context)
+        #[[ -z $KUBECONFIG ]] && return # disabled
+	#local ctx=$(kubectl config current-context)
+	local ctx=$(awk '/^current-context:/{print $2;exit;}' <~/.kube/config)
 	printf "${SYMBOL_K8S}$ctx"
     }
 
